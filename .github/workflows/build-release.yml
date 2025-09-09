@@ -1,4 +1,4 @@
-name: Build SmartTube for Android TV
+name: Build SmartTube Android TV Beta Release
 
 on:
   push:
@@ -28,7 +28,7 @@ jobs:
         git fetch --all --tags
 
     - name: List files in common utils for debug
-      run: ls -lR common/src/main/java/com/liskovsoft/smartyoutubetv2/common/utils/
+      run: ls -lR common/src/stbeta/java/com/liskovsoft/smartyoutubetv2/common/utils/
 
     - name: Set up JDK 14 (Zulu)
       uses: actions/setup-java@v4
@@ -37,10 +37,10 @@ jobs:
         java-version: 14
 
     - name: Clean Gradle project and refresh dependencies
-      run: ./gradlew clean assembleStorigRelease --refresh-dependencies --no-daemon
+      run: ./gradlew clean assembleStbetaRelease --refresh-dependencies --no-daemon
 
-    - name: Upload release APK artifact
+    - name: Upload beta release APK artifact
       uses: actions/upload-artifact@v4
       with:
-        name: SmartTube-AndroidTV-Release-APK
-        path: app/build/outputs/apk/storig/release/*.apk
+        name: SmartTube-AndroidTV-Beta-Release-APK
+        path: app/build/outputs/apk/stbeta/release/*.apk
