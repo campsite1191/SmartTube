@@ -36,8 +36,14 @@ jobs:
     - name: Clean Gradle project and refresh dependencies
       run: ./gradlew clean assembleStbetaRelease --refresh-dependencies --no-daemon
 
-    - name: Upload beta release APK artifact
+    - name: Find APK files
+      run: |
+        echo "Listing all APK files found:"
+        find . -type f -name "*.apk"
+
+    - name: Upload all APK artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: SmartTube-AndroidTV-Beta-Release-APK
-        path: app/build/outputs/apk/release/*.apk
+        name: SmartTube-AndroidTV-Beta-APKs
+        path: |
+          **/*.apk
