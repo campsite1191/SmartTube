@@ -1,0 +1,36 @@
+name: Build SmartTube Release APK
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code and submodules
+      uses: actions/checkout@v4
+      with:
+        submodules: true
+
+    - name: Set up JDK 14 with Zulu
+      uses: actions/setup-java@v4
+      with:
+        java-version: 14
+        distribution: 'zulu'
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x ./gradlew
+
+    - name: Build release APK
+      run: ./gradlew clean assembleStorigRelease
+
+    - name: Upload release APK artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: SmartTube-Release-APK
+        path: app/build/outputs/apk/storig/release/*.apk
