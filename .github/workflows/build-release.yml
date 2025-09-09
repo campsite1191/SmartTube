@@ -16,7 +16,10 @@ jobs:
       uses: actions/checkout@v4
       with:
         submodules: true
-        fetch-depth: 0  # Needed for full clone and to catch all tracked files
+        fetch-depth: 0  # Full clone for all files and submodules
+
+    - name: Grant execute permission to gradlew
+      run: chmod +x ./gradlew
 
     - name: Ensure all submodules and tags are updated
       run: |
@@ -24,20 +27,17 @@ jobs:
         git submodule update --init --recursive
         git fetch --all --tags
 
-    - name: Clean Gradle cache (force no caching)
-      run: ./gradlew clean --no-daemon
-
     - name: Set up JDK 14 (Zulu)
       uses: actions/setup-java@v4
       with:
         distribution: zulu
         java-version: 14
 
-    - name: Grant execute permission to gradlew
-      run: chmod +x ./gradlew
+    - name: Clean Gradle project
+      run: ./gradlew clean --no-daemon
 
     - name: Build Android TV release APK
-      run: ./gradlew --no-daemon assembleStorigRelease
+      run: ./gradlew assembleStorigRelease --no-daemon
 
     - name: Upload release APK artifact
       uses: actions/upload-artifact@v4
