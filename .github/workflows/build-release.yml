@@ -1,9 +1,7 @@
-name: Build SmartTube Android TV Beta Release
+name: Build and Release SmartTube Debug APK
 
 on:
   push:
-    branches: [ main, master ]
-  pull_request:
     branches: [ main, master ]
   workflow_dispatch:
 
@@ -33,17 +31,32 @@ jobs:
         distribution: zulu
         java-version: 14
 
-    - name: Clean Gradle project and refresh dependencies
-      run: ./gradlew clean assembleStbetaRelease --refresh-dependencies --no-daemon
+    - name: Clean Gradle project and assemble debug APK
+      run: ./gradlew clean assembleStbetaDebug --no-daemon
 
     - name: Find APK files
       run: |
         echo "Listing all APK files found:"
         find . -type f -name "*.apk"
 
-    - name: Upload all APK artifacts
+    - name: Upload APK artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: SmartTube-AndroidTV-Beta-APKs
-        path: |
-          **/*.apk
+        name: SmartTube-AndroidTV-Debug-APKs
+        path: '**/*.apk'
+
+    - name: Create or update GitHub Release
+      id: create_release
+      uses: ncipollo/release-action@v1
+      with:
+        tag: ${{ github.ref_name }}  # Uses branch/tag name as release tag
+        name: Release ${{ github.ref_name }}
+        draft: false
+        prerelease: false
+
+    - name: Upload APKs to GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: '**/*.apk'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
