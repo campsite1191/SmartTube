@@ -16,7 +16,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         submodules: true
-        fetch-depth: 0  # Full clone for all files and submodules
+        fetch-depth: 0
 
     - name: Grant execute permission to gradlew
       run: chmod +x ./gradlew
@@ -27,17 +27,17 @@ jobs:
         git submodule update --init --recursive
         git fetch --all --tags
 
+    - name: List files in common utils for debug
+      run: ls -lR common/src/main/java/com/liskovsoft/smartyoutubetv2/common/utils/
+
     - name: Set up JDK 14 (Zulu)
       uses: actions/setup-java@v4
       with:
         distribution: zulu
         java-version: 14
 
-    - name: Clean Gradle project
-      run: ./gradlew clean --no-daemon
-
-    - name: Build Android TV release APK
-      run: ./gradlew assembleStorigRelease --no-daemon
+    - name: Clean Gradle project and refresh dependencies
+      run: ./gradlew clean assembleStorigRelease --refresh-dependencies --no-daemon
 
     - name: Upload release APK artifact
       uses: actions/upload-artifact@v4
