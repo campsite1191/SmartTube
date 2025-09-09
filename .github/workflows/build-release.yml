@@ -27,9 +27,6 @@ jobs:
         git submodule update --init --recursive
         git fetch --all --tags
 
-    - name: List APK output directory (debug)
-      run: ls -lR app/build/outputs/apk/
-
     - name: Set up JDK 14 (Zulu)
       uses: actions/setup-java@v4
       with:
